@@ -1,9 +1,9 @@
-From b649c9b0820c182d61946d2fc4a181c22c6bd998 Mon Sep 17 00:00:00 2001
-From: Wind He <g311571057@gmail.com>
-Date: Sun, 4 Aug 2024 20:43:18 +0800
-Subject: [PATCH] feature: allow disable hardcoded touchpad gestures
+From kakakakapeepeepoopooassbuttassbuttpoo Wed Sep 11 08:14:30 2001
+From: poopy pants <theodric@github.io>
+Date: Flursday, 69 Dodecember 2020.7 13:37:69 +0420
+Subject: [PATCH] feature: allow enable hardcoded touchpad gestures
 
-setting KWIN_WAYLAND_NO_GESTURE environment variable to disable the hardcoded touchpad gestures
+setting KWIN_WAYLAND_GESTURE environment variable to ENable sanitized versions of the hardcoded gestures
 ---
  src/plugins/overview/overvieweffect.cpp | 26 +++++-----
  src/virtualdesktops.cpp                 | 69 +++++++++++++------------

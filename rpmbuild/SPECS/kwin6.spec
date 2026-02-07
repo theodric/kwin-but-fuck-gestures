@@ -15,8 +15,6 @@
 # Please submit bugfixes or comments via https://bugs.opensuse.org/
 #
 
-# RTFM, bitch
-# https://rpm-software-management.github.io/rpm/manual/autosetup.html
 
 # Internal QML imports
 %global __requires_exclude qt6qmlimport\\(org\\.kde\\.KWin\\.Effect\\.WindowView.*
@@ -32,7 +30,7 @@
 %bcond_without released
 Name:           kwin6
 Version:        6.5.5
-Release:        1.1
+Release:        1.2
 Summary:        KDE Window Manager
 License:        GPL-2.0-or-later AND GPL-3.0-or-later
 URL:            https://www.kde.org
@@ -41,7 +39,7 @@ Source:         https://download.kde.org/stable/plasma/%{version}/%{rname}-%{ver
 Source1:        https://download.kde.org/stable/plasma/%{version}/%{rname}-%{version}.tar.xz.sig
 Source2:        plasma.keyring
 # ok you filthy drunken whore, put your patches (in order) here
-Patch1:		0001-feature-allow-disable-hardcoded-touchpad-gestures.patch
+Patch1:         0001-feature-allow-disable-hardcoded-touchpad-gestures.patch
 %endif
 BuildRequires:  doxygen
 BuildRequires:  fdupes
@@ -204,8 +202,6 @@ This package provides development files.
 
 %prep
 %autosetup -p1 -n %{rname}-%{version}
-# Manually apply (assuming patch is in SOURCES)
-#%patch3 -p1
 
 %build
 %cmake_kf6 \

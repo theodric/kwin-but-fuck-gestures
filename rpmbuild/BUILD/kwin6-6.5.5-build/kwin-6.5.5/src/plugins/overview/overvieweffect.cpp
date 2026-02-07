@@ -32,18 +32,20 @@ OverviewEffect::OverviewEffect()
     , m_gridBorder(new EffectTogglableTouchBorder(m_gridState))
     , m_shutdownTimer(new QTimer(this))
 {
-    auto gesture = new EffectTogglableGesture(m_overviewState);
-    gesture->addTouchpadSwipeGesture(SwipeDirection::Up, 4);
-    gesture->addTouchscreenSwipeGesture(SwipeDirection::Up, 3);
+    if (qEnvironmentVariableIsSet("KWIN_WAYLAND_GESTURE")) {
+        auto gesture = new EffectTogglableGesture(m_overviewState);
+        gesture->addTouchpadSwipeGesture(SwipeDirection::Up, 4);
+        #gesture->addTouchscreenSwipeGesture(SwipeDirection::Up, 3);
 
-    auto transitionGesture = new EffectTogglableGesture(m_transitionState);
-    transitionGesture->addTouchpadSwipeGesture(SwipeDirection::Up, 4);
-    transitionGesture->addTouchscreenSwipeGesture(SwipeDirection::Up, 3);
-    m_transitionState->stop();
+        auto transitionGesture = new EffectTogglableGesture(m_transitionState);
+        transitionGesture->addTouchpadSwipeGesture(SwipeDirection::Up, 4);
+        #transitionGesture->addTouchscreenSwipeGesture(SwipeDirection::Up, 3);
+        m_transitionState->stop();
 
-    auto gridGesture = new EffectTogglableGesture(m_gridState);
-    gridGesture->addTouchpadSwipeGesture(SwipeDirection::Down, 4);
-    gridGesture->addTouchscreenSwipeGesture(SwipeDirection::Down, 3);
+        auto gridGesture = new EffectTogglableGesture(m_gridState);
+        gridGesture->addTouchpadSwipeGesture(SwipeDirection::Down, 4);
+        #gridGesture->addTouchscreenSwipeGesture(SwipeDirection::Down, 3);
+    }
 
     connect(m_overviewState, &EffectTogglableState::inProgressChanged, this, &OverviewEffect::overviewGestureInProgressChanged);
     connect(m_overviewState, &EffectTogglableState::partialActivationFactorChanged, this, &OverviewEffect::overviewPartialActivationFactorChanged);
