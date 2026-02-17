@@ -29,14 +29,14 @@
 %{!?_plasma6_version: %define _plasma6_version %(echo %{_plasma6_bugfix} | awk -F. '{print $1"."$2}')}
 %bcond_without released
 Name:           kwin6
-Version:        6.5.5
-Release:        1.2
+Version:        6.6.0
+Release:        1.1
 Summary:        KDE Window Manager
 License:        GPL-2.0-or-later AND GPL-3.0-or-later
 URL:            https://www.kde.org
-Source:         https://download.kde.org/stable/plasma/%{version}/%{rname}-%{version}.tar.xz
+Source:         %{rname}-%{version}.tar.xz
 %if %{with released}
-Source1:        https://download.kde.org/stable/plasma/%{version}/%{rname}-%{version}.tar.xz.sig
+Source1:        %{rname}-%{version}.tar.xz.sig
 Source2:        plasma.keyring
 # ok you filthy drunken whore, put your patches (in order) here
 Patch1:         0001-feature-allow-disable-hardcoded-touchpad-gestures.patch
@@ -297,8 +297,13 @@ This package provides development files.
 %{_kf6_plugindir}/kwin/plugins/BounceKeysPlugin.so
 %{_kf6_plugindir}/kwin/plugins/KeyNotificationPlugin.so
 %{_kf6_plugindir}/kwin/plugins/StickyKeysPlugin.so
+%{_kf6_plugindir}/kwin/plugins/SlowKeysPlugin.so
 %{_kf6_plugindir}/kwin/plugins/buttonsrebind.so
+%{_libdir}/qt6/plugins/kwin/plugins/gamecontroller.so
+%{_prefix}/lib/debug%{_libdir}/qt6/plugins/kwin/plugins/gamecontroller.so.debug
+%if %{pkg_vcmp pkgconfig(libeis-1.0) >= 1.4}
 %{_kf6_plugindir}/kwin/plugins/eis.so
+%endif
 %{_kf6_plugindir}/kwin/plugins/krunnerintegration.so
 %{_kf6_plugindir}/kwin/plugins/nightlight.so
 %{_kf6_plugindir}/kwin/plugins/MouseKeysPlugin.so
@@ -340,6 +345,21 @@ This package provides development files.
 %exclude %{_kf6_htmldir}/en
 
 %changelog
+* Thu Feb 12 2026 Fabian Vogt <fabian@ritter-vogt.de>
+- Update to 6.6.0:
+  * New bugfix release
+  * For more details see https://kde.org/announcements/plasma/6/6.6.0
+- Too many changes to list here
+* Wed Jan 28 2026 Fabian Vogt <fabian@ritter-vogt.de>
+- Update to 6.5.91:
+  * New bugfix release
+  * For more details see https://kde.org/announcements/plasma/6/6.5.91
+- Too many changes to list here
+* Sat Jan 17 2026 Fabian Vogt <fabian@ritter-vogt.de>
+- Update to 6.5.90:
+  * New feature release
+  * For more details see https://kde.org/announcements/plasma/6/6.5.90
+- Too many changes to list here
 * Tue Jan 13 2026 Fabian Vogt <fabian@ritter-vogt.de>
 - Update to 6.5.5:
   * New bugfix release

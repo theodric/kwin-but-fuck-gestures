@@ -29,7 +29,7 @@ index c4b9d1f9eb..00538f50f2 100644
 -    auto gridGesture = new EffectTogglableGesture(m_gridState);
 -    gridGesture->addTouchpadSwipeGesture(SwipeDirection::Down, 4);
 -    gridGesture->addTouchscreenSwipeGesture(SwipeDirection::Down, 3);
-+    if (!qEnvironmentVariableIsSet("KWIN_WAYLAND_GESTURE")) {
++    if (!qEnvironmentVariableIsSet("KWIN_WAYLAND_NO_GESTURE")) {
 +        auto gesture = new EffectTogglableGesture(m_overviewState);
 +        gesture->addTouchpadSwipeGesture(SwipeDirection::Up, 4);
 +        //gesture->addTouchscreenSwipeGesture(SwipeDirection::Up, 3);
@@ -87,7 +87,7 @@ index a0a09040d4..9b4f96e282 100644
 -    });
 -    input()->registerTouchscreenSwipeShortcut(SwipeDirection::Left, 3, m_swipeGestureReleasedX.get(), left);
 -    input()->registerTouchscreenSwipeShortcut(SwipeDirection::Right, 3, m_swipeGestureReleasedX.get(), right);
-+    if (!qEnvironmentVariableIsSet("KWIN_WAYLAND_GESTURE")) {
++    if (!qEnvironmentVariableIsSet("KWIN_WAYLAND_NO_GESTURE")) {
 +        connect(m_swipeGestureReleasedX.get(), &QAction::triggered, this, &VirtualDesktopManager::gestureReleasedX);
 +        connect(m_swipeGestureReleasedY.get(), &QAction::triggered, this, &VirtualDesktopManager::gestureReleasedY);
 +
