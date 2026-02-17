@@ -1,0 +1,34 @@
+1. enable the source repo && zypper ref
+
+2. ensure build toolchain: 
+zypper in osc rpm-build rpmdevtools gcc-c++ cmake ninja git libqt6-qtbase-devel libqt6-qtdeclarative-devel extra-cmake-modules
+
+3. install source package
+zypper source-install kwin6
+
+4. set up ~/rpmbuild
+rpmdev-setuptree
+
+5. Grab the relevant SPECS and SOURCES from /usr/src/packages/SPECS/ and /usr/src/packages/SOURCES and place them in the corresponding SPECS and SOURCES directories in ~/rpmbuild
+
+6. Place any patches in ~/rpmbuild/SOURCES
+
+7. Modify the SPECS/whatever.spec file to declare the patch as a Patch. For example, if there are Patch1 and Patch2 declared, then add a Patch3 below that and provide the filename of the patch file. If there are no patches, then declare a Patch1 below the last Source. This will then be picked up by autosetup.
+
+8. Build the package by entering ~/rpmbuild/SPECS and running
+rpmbuild -ba kwin6.spec
+
+9. Install the newly-built packages:
+cd ../RPMS/ && zypper in */*rpm
+
+helper scripts:
+
+twinkpad:~/rpmbuild> cat cleanup.sh 
+rm -fv *RPMS/*rpm
+rm -fv *RPMS/*/*rpm
+rm -rf BUILD/*
+rm -fv compilation.log
+
+twinkpad:~/rpmbuild> cat build.sh 
+rpmbuild -ba SPECS/kwin6.spec |& tee compilation.log
+
