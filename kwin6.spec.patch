@@ -1,3 +1,20 @@
-40a41,42
-> # ok you filthy drunken whore, put your patches (in order) here
-> Patch1:         0001-feature-allow-disable-hardcoded-touchpad-gestures.patch
+--- /usr/src/packages/SPECS/kwin6.spec	2026-02-12 19:42:16.000000000 +0000
++++ SPECS/kwin6.spec	2026-02-17 21:57:46.784008038 +0000
+@@ -38,6 +38,8 @@
+ %if %{with released}
+ Source1:        %{rname}-%{version}.tar.xz.sig
+ Source2:        plasma.keyring
++# ok you filthy drunken whore, put your patches (in order) here
++Patch1:         0001-feature-allow-disable-hardcoded-touchpad-gestures.patch
+ %endif
+ BuildRequires:  doxygen
+ BuildRequires:  fdupes
+@@ -297,6 +299,8 @@
+ %{_kf6_plugindir}/kwin/plugins/StickyKeysPlugin.so
+ %{_kf6_plugindir}/kwin/plugins/SlowKeysPlugin.so
+ %{_kf6_plugindir}/kwin/plugins/buttonsrebind.so
++%{_libdir}/qt6/plugins/kwin/plugins/gamecontroller.so
++%{_prefix}/lib/debug%{_libdir}/qt6/plugins/kwin/plugins/gamecontroller.so.debug
+ %if %{pkg_vcmp pkgconfig(libeis-1.0) >= 1.4}
+ %{_kf6_plugindir}/kwin/plugins/eis.so
+ %endif
