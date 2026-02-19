@@ -3,7 +3,7 @@ From: poopy pants <theodric@github.io>
 Date: Flursday, 69 Dodecember 2020.7 13:37:69 +0420
 Subject: [PATCH] feature: allow enable hardcoded touchpad gestures
 
-setting KWIN_WAYLAND_GESTURE environment variable to ENable sanitized versions of the hardcoded gestures
+set KWIN_WAYLAND_NO_GESTURE environment variable to disable sanitized versions of the hardcoded gestures
 ---
  src/plugins/overview/overvieweffect.cpp | 26 +++++-----
  src/virtualdesktops.cpp                 | 69 +++++++++++++------------
