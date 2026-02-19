@@ -28,9 +28,11 @@
 # Latest ABI-stable Plasma (e.g. 6.0 in KF6, but 6.0.80 in KUF)
 %{!?_plasma6_version: %define _plasma6_version %(echo %{_plasma6_bugfix} | awk -F. '{print $1"."$2}')}
 %bcond_without released
-Name:           kwin6
+# theodric changed name
+Name:           kwin6-nogestures
 Version:        6.6.0
-Release:        1.1
+# theodric changed release
+Release:        1.1.1nogestures
 Summary:        KDE Window Manager
 License:        GPL-2.0-or-later AND GPL-3.0-or-later
 URL:            https://www.kde.org
@@ -38,7 +40,7 @@ Source:         %{rname}-%{version}.tar.xz
 %if %{with released}
 Source1:        %{rname}-%{version}.tar.xz.sig
 Source2:        plasma.keyring
-# ok you filthy drunken whore, put your patches (in order) here
+# theodric added patch
 Patch1:         0001-feature-allow-disable-hardcoded-touchpad-gestures.patch
 %endif
 BuildRequires:  doxygen
@@ -174,6 +176,10 @@ Obsoletes:      kwin5-lang < %{version}
 Provides:       windowmanager
 Provides:       qt6qmlimport(org.kde.kwin)
 Provides:       qt6qmlimport(org.kde.kwin.3) = 0
+# theodric Three lines to supersede distribution-provided kwin6* packages
+Provides:	kwin6 = %{version}
+Obsoletes:	kwin6 < %{version}-%{release}
+Conflicts:	kwin6
 
 %description
 KWin is Plasma window manager.
