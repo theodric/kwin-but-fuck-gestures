@@ -28,17 +28,15 @@
 # Latest ABI-stable Plasma (e.g. 6.0 in KF6, but 6.0.80 in KUF)
 %{!?_plasma6_version: %define _plasma6_version %(echo %{_plasma6_bugfix} | awk -F. '{print $1"."$2}')}
 %bcond_without released
-# theodric changed name
-Name:           kwin6-nogestures
-Version:        6.6.0
-# theodric changed release
-Release:        1.1.1nogestures
+Name:           kwin6
+Version:        6.6.3
+Release:        1.1
 Summary:        KDE Window Manager
 License:        GPL-2.0-or-later AND GPL-3.0-or-later
 URL:            https://www.kde.org
-Source:         %{rname}-%{version}.tar.xz
+Source:         https://download.kde.org/stable/plasma/%{version}/%{rname}-%{version}.tar.xz
 %if %{with released}
-Source1:        %{rname}-%{version}.tar.xz.sig
+Source1:        https://download.kde.org/stable/plasma/%{version}/%{rname}-%{version}.tar.xz.sig
 Source2:        plasma.keyring
 # theodric added patch
 Patch1:         0001-feature-allow-disable-hardcoded-touchpad-gestures.patch
@@ -177,9 +175,9 @@ Provides:       windowmanager
 Provides:       qt6qmlimport(org.kde.kwin)
 Provides:       qt6qmlimport(org.kde.kwin.3) = 0
 # theodric Three lines to supersede distribution-provided kwin6* packages
-Provides:	kwin6 = %{version}
-Obsoletes:	kwin6 < %{version}-%{release}
-Conflicts:	kwin6
+Provides:   kwin6 = %{version}
+Obsoletes:  kwin6 < %{version}-%{release}
+Conflicts:  kwin6
 
 %description
 KWin is Plasma window manager.
@@ -305,8 +303,9 @@ This package provides development files.
 %{_kf6_plugindir}/kwin/plugins/StickyKeysPlugin.so
 %{_kf6_plugindir}/kwin/plugins/SlowKeysPlugin.so
 %{_kf6_plugindir}/kwin/plugins/buttonsrebind.so
+#theodric two lines to hack around the stupid gamecontroller.so errors
 %{_libdir}/qt6/plugins/kwin/plugins/gamecontroller.so
-%{_prefix}/lib/debug%{_libdir}/qt6/plugins/kwin/plugins/gamecontroller.so.debug
+%{_prefix}/lib/debug%{_libdir}/qt6/plugins/kwin/plugins/
 %if %{pkg_vcmp pkgconfig(libeis-1.0) >= 1.4}
 %{_kf6_plugindir}/kwin/plugins/eis.so
 %endif
@@ -351,6 +350,47 @@ This package provides development files.
 %exclude %{_kf6_htmldir}/en
 
 %changelog
+* Wed Mar 18 2026 Fabian Vogt <fabian@ritter-vogt.de>
+- Update to 6.6.3:
+  * New bugfix release
+  * For more details see https://kde.org/announcements/plasma/6/6.6.3
+- Changes since 6.6.2:
+  * Update version for new release 6.6.3
+  * plugins/zoom: Fix segmentation fault when changing pointer mode from Hide to Scale (kde#517073)
+  * kcms/scripts: Check result from loading UI file (kde#517137)
+  * plugins/mousemark: Enable Apply button when editing shortcut (kde#501537)
+  * compositor: Undim faster than you dim
+  * plugins/squash: Avoid extending lifetime of windows (kde#495952)
+  * core/backendoutput: disable DDC/CI for the Samsung LS24D60xU (kde#516605)
+  * input: be more strict about passing input to the decoration
+  * scene/workspace: change rounding policy in 'addCandidates()' (kde#517264)
+  * backends: fix crash in OutputDeviceV2Interface::updateModes (kde#517198)
+  * backends/drm: fix check for ddc/ci software dimming (kde#516867)
+  * plugins/screencast: set appropriate minFramerate
+  * backends/drm: if the current mode is removed, attempt to find an equivalent one
+  * options: emit correct signal
+* Tue Mar  3 2026 Fabian Vogt <fabian@ritter-vogt.de>
+- Update to 6.6.2:
+  * New bugfix release
+  * For more details see https://kde.org/announcements/plasma/6/6.6.2
+- Changes since 6.6.1:
+  * Update version for new release 6.6.2
+  * backends/drm: Fix crash in OutputDeviceV2Interface::updateModes() (kde#516452)
+  * Fix Workspace::findOutput() with disabled mirrored outputs (kde#516733)
+  * Add missing include for ftruncate
+  * plugins/gamecontroller: fix build on 32 bit architectures (kde#516886)
+  * plugins/zoom: Respect mouse tracking setting when using caret tracking (kde#516435)
+  * backends/drm: don't allow matrices in 3D LUTs (kde#516731)
+  * Fix gap in decoration input region
+  * core: Add Rect::roundedIn()
+  * workspace: prevent the placeholder output from changing dpms mode (kde#516454)
+  * autotests: Rework output configuration tests in testOutputChanges
+  * wayland/outputdevice: schedule a done event for priority changes (kde#516611)
+* Tue Feb 24 2026 Fabian Vogt <fabian@ritter-vogt.de>
+- Update to 6.6.1:
+  * New bugfix release
+  * For more details see https://kde.org/announcements/plasma/6/6.6.1
+- Too many changes to list here
 * Thu Feb 12 2026 Fabian Vogt <fabian@ritter-vogt.de>
 - Update to 6.6.0:
   * New bugfix release
