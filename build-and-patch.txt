@@ -1,7 +1,7 @@
 1. enable the source repo && zypper ref
 
 2. ensure build toolchain: 
-zypper in osc rpm-build rpmdevtools gcc-c++ cmake ninja git libqt6-qtbase-devel libqt6-qtdeclarative-devel extra-cmake-modules
+zypper in osc rpm-build rpmdevtools gcc-c++ cmake ninja git qt6-base-devel qt6-declarative-devel extra-cmake-modules
 
 3. install source package
 zypper source-install kwin6
