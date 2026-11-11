@@ -1,0 +1,143 @@
+From kakakakapeepeepoopooassbuttassbuttpoo Wed Sep 11 08:14:30 2001
+From: poopy pants <theodric@github.io>
+Date: Flursday, 69 Dodecember 2020.7 13:37:69 +0420
+Subject: [PATCH] feature: allow enable hardcoded touchpad gestures
+
+set KWIN_WAYLAND_NO_GESTURE environment variable to disable sanitized versions of the hardcoded gestures
+---
+ src/plugins/overview/overvieweffect.cpp | 26 +++++-----
+ src/virtualdesktops.cpp                 | 69 +++++++++++++------------
+ 2 files changed, 50 insertions(+), 45 deletions(-)
+
+--- a/b/src/plugins/overview/overvieweffect.cpp	2026-11-11 20:30:45.577335128 +0000
++++ b/src/plugins/overview/overvieweffect.cpp	2026-11-11 20:31:09.095719840 +0000
+@@ -32,18 +32,20 @@
+     , m_shutdownTimer(new QTimer(this))
+     , m_manager(new KRunner::RunnerManager(this))
+ {
+-    auto gesture = new EffectTogglableGesture(m_overviewState);
+-    gesture->addTouchpadSwipeGesture(SwipeDirection::Up, 4);
+-    gesture->addTouchscreenSwipeGesture(SwipeDirection::Up, 3);
++    if (!qEnvironmentVariableIsSet("KWIN_WAYLAND_NO_GESTURE")) {
++        auto gesture = new EffectTogglableGesture(m_overviewState);
++        gesture->addTouchpadSwipeGesture(SwipeDirection::Up, 4);
++        //gesture->addTouchscreenSwipeGesture(SwipeDirection::Up, 3);
+ 
+-    auto transitionGesture = new EffectTogglableGesture(m_transitionState);
+-    transitionGesture->addTouchpadSwipeGesture(SwipeDirection::Up, 4);
+-    transitionGesture->addTouchscreenSwipeGesture(SwipeDirection::Up, 3);
+-    m_transitionState->stop();
++        auto transitionGesture = new EffectTogglableGesture(m_transitionState);
++        transitionGesture->addTouchpadSwipeGesture(SwipeDirection::Up, 4);
++        //transitionGesture->addTouchscreenSwipeGesture(SwipeDirection::Up, 3);
++        m_transitionState->stop();
+ 
+-    auto gridGesture = new EffectTogglableGesture(m_gridState);
+-    gridGesture->addTouchpadSwipeGesture(SwipeDirection::Down, 4);
+-    gridGesture->addTouchscreenSwipeGesture(SwipeDirection::Down, 3);
++        auto gridGesture = new EffectTogglableGesture(m_gridState);
++        gridGesture->addTouchpadSwipeGesture(SwipeDirection::Down, 4);
++        //gridGesture->addTouchscreenSwipeGesture(SwipeDirection::Down, 3);
++    }
+ 
+     connect(m_overviewState, &EffectTogglableState::inProgressChanged, this, &OverviewEffect::overviewGestureInProgressChanged);
+     connect(m_overviewState, &EffectTogglableState::partialActivationFactorChanged, this, &OverviewEffect::overviewPartialActivationFactorChanged);
+--- a/b/src/virtualdesktops.cpp	2026-11-11 20:30:45.581335194 +0000
++++ b/src/virtualdesktops.cpp	2026-11-11 20:31:09.100719922 +0000
+@@ -782,50 +782,53 @@
+ 
+     // Gestures
+     // These connections decide which desktop to end on after gesture ends
+-    connect(m_swipeGestureReleasedX.get(), &QAction::triggered, this, &VirtualDesktopManager::gestureReleasedX);
+-    connect(m_swipeGestureReleasedY.get(), &QAction::triggered, this, &VirtualDesktopManager::gestureReleasedY);
+-    const auto emitCurrentChanging = [this]() {
+-        if (m_perOutputVirtualDesktops) {
+-            LogicalOutput *output = workspace()->activeOutput();
+-            Q_EMIT currentChanging(currentDesktop(output), m_currentDesktopOffset, output);
+-        } else {
+-            const auto outputs = workspace()->outputs();
+-            for (LogicalOutput *output : outputs) {
++    if (!qEnvironmentVariableIsSet("KWIN_WAYLAND_NO_GESTURE")) {
++        connect(m_swipeGestureReleasedX.get(), &QAction::triggered, this, &VirtualDesktopManager::gestureReleasedX);
++        connect(m_swipeGestureReleasedY.get(), &QAction::triggered, this, &VirtualDesktopManager::gestureReleasedY);
++        const auto emitCurrentChanging = [this]() {
++            if (m_perOutputVirtualDesktops) {
++                LogicalOutput *output = workspace()->activeOutput();
+                 Q_EMIT currentChanging(currentDesktop(output), m_currentDesktopOffset, output);
++            } else {
++                const auto outputs = workspace()->outputs();
++                for (LogicalOutput *output : outputs) {
++                    Q_EMIT currentChanging(currentDesktop(output), m_currentDesktopOffset, output);
++                }
+             }
+-        }
+-    };
++        };
+ 
+-    const auto left = [this, emitCurrentChanging](qreal cb) {
+-        if (grid().width() > 1) {
+-            m_currentDesktopOffset.setX(cb);
+-            emitCurrentChanging();
+-        }
+-    };
+-    const auto right = [this, emitCurrentChanging](qreal cb) {
+-        if (grid().width() > 1) {
+-            m_currentDesktopOffset.setX(-cb);
+-            emitCurrentChanging();
+-        }
+-    };
+-    input()->registerTouchpadSwipeShortcut(SwipeDirection::Left, 3, m_swipeGestureReleasedX.get(), left);
+-    input()->registerTouchpadSwipeShortcut(SwipeDirection::Right, 3, m_swipeGestureReleasedX.get(), right);
+-    input()->registerTouchpadSwipeShortcut(SwipeDirection::Left, 4, m_swipeGestureReleasedX.get(), left);
+-    input()->registerTouchpadSwipeShortcut(SwipeDirection::Right, 4, m_swipeGestureReleasedX.get(), right);
+-    input()->registerTouchpadSwipeShortcut(SwipeDirection::Down, 3, m_swipeGestureReleasedY.get(), [this, emitCurrentChanging](qreal cb) {
+-        if (grid().height() > 1) {
+-            m_currentDesktopOffset.setY(-cb);
+-            emitCurrentChanging();
+-        }
+-    });
+-    input()->registerTouchpadSwipeShortcut(SwipeDirection::Up, 3, m_swipeGestureReleasedY.get(), [this, emitCurrentChanging](qreal cb) {
+-        if (grid().height() > 1) {
+-            m_currentDesktopOffset.setY(cb);
+-            emitCurrentChanging();
+-        }
+-    });
+-    input()->registerTouchscreenSwipeShortcut(SwipeDirection::Left, 3, m_swipeGestureReleasedX.get(), left);
+-    input()->registerTouchscreenSwipeShortcut(SwipeDirection::Right, 3, m_swipeGestureReleasedX.get(), right);
++        const auto left = [this, emitCurrentChanging](qreal cb) {
++            if (grid().width() > 1) {
++                m_currentDesktopOffset.setX(cb);
++                emitCurrentChanging();
++            }
++        };
++        const auto right = [this, emitCurrentChanging](qreal cb) {
++            if (grid().width() > 1) {
++                m_currentDesktopOffset.setX(-cb);
++                emitCurrentChanging();
++            }
++        };
++
++        //input()->registerTouchpadSwipeShortcut(SwipeDirection::Left, 3, m_swipeGestureReleasedX.get(), left);
++        //input()->registerTouchpadSwipeShortcut(SwipeDirection::Right, 3, m_swipeGestureReleasedX.get(), right);
++        input()->registerTouchpadSwipeShortcut(SwipeDirection::Left, 4, m_swipeGestureReleasedX.get(), left);
++        input()->registerTouchpadSwipeShortcut(SwipeDirection::Right, 4, m_swipeGestureReleasedX.get(), right);
++        input()->registerTouchpadSwipeShortcut(SwipeDirection::Down, 4, m_swipeGestureReleasedY.get(), [this, emitCurrentChanging](qreal cb) {
++            if (grid().height() > 1) {
++                m_currentDesktopOffset.setY(-cb);
++                emitCurrentChanging();
++            }
++        });
++        input()->registerTouchpadSwipeShortcut(SwipeDirection::Up, 4, m_swipeGestureReleasedY.get(), [this, emitCurrentChanging](qreal cb) {
++            if (grid().height() > 1) {
++                m_currentDesktopOffset.setY(cb);
++                emitCurrentChanging();
++            }
++        });
++        //input()->registerTouchscreenSwipeShortcut(SwipeDirection::Left, 3, m_swipeGestureReleasedX.get(), left);
++        //input()->registerTouchscreenSwipeShortcut(SwipeDirection::Right, 3, m_swipeGestureReleasedX.get(), right);
++    }
+ 
+     // axis events
+     input()->registerAxisShortcut(Qt::MetaModifier | Qt::AltModifier, PointerAxisDown,
+-- 
+2.46.0
